@@ -25,8 +25,12 @@ OUTSIDE_DECORATION_PCT = 20
 
 BRIGHTBLUE = (  0, 170, 255)
 WHITE      = (255, 255, 255)
-BGCOLOR = BRIGHTBLUE
-TEXTCOLOR = WHITE
+# Changed bgcolor from BRIGHTBLUE to peach
+BGCOLOR = (249, 237, 215)
+
+# Changed textcolor from white to gold
+TEXTCOLOR = (214, 192, 42)
+# TEXTCOLOR = (255, 215, 215)
 
 UP = 'up'
 DOWN = 'down'
@@ -48,27 +52,32 @@ def main():
     DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
 
     pygame.display.set_caption('Star Pusher')
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
+    # Changed
+    BASICFONT = pygame.font.Font('loliSkin/A_Lolita_Scorned.ttf', 24)
 
     # A global dict value that will contain all the Pygame
     # Surface objects returned by pygame.image.load().
     IMAGESDICT = {'uncovered goal': pygame.image.load('RedSelector.png'),
                   'covered goal': pygame.image.load('Selector.png'),
                   'star': pygame.image.load('Star.png'),
-                  'corner': pygame.image.load('Wall_Block_Tall.png'),
-                  'wall': pygame.image.load('Wood_Block_Tall.png'),
-                  'inside floor': pygame.image.load('Plain_Block.png'),
+                  'corner': pygame.image.load('loliSkin/Wall_Block_Tall.png'),
+#                  'wall': pygame.image.load('Wood_Block_Tall.png'),
+                  'wall': pygame.image.load('loliSkin/walls.png'),
+#                  'inside floor': pygame.image.load('Plain_Block.png'),
+                  'inside floor': pygame.image.load('Grass_Block.png'),
                   'outside floor': pygame.image.load('Grass_Block.png'),
-                  'title': pygame.image.load('star_title.png'),
+                  'title': pygame.image.load('loliSkin/star_title.png'),
+                  'titlebg': pygame.image.load('loliSkin/bgtitle.png'),
+                  'bg': pygame.image.load('loliSkin/bg.png'), # Added backgrounds
                   'solved': pygame.image.load('star_solved.png'),
                   'princess': pygame.image.load('princess.png'),
                   'boy': pygame.image.load('boy.png'),
                   'catgirl': pygame.image.load('catgirl.png'),
                   'horngirl': pygame.image.load('horngirl.png'),
                   'pinkgirl': pygame.image.load('pinkgirl.png'),
-                  'rock': pygame.image.load('Rock.png'),
-                  'short tree': pygame.image.load('Tree_Short.png'),
-                  'tall tree': pygame.image.load('Tree_Tall.png'),
+                  'rock': pygame.image.load('loliSkin/Rock.png'),
+                  'short tree': pygame.image.load('loliSkin/Tree_Short.png'),
+                  'tall tree': pygame.image.load('loliSkin/Tree_Tall.png'),
                   'ugly tree': pygame.image.load('Tree_Ugly.png')}
 
     # These dict values are global, and map the character that appears
@@ -97,6 +106,7 @@ def main():
     # details on the format of this file and how to make your own levels.
     levels = readLevelsFile('starPusherLevels.txt')
     currentLevelIndex = 0
+
 
     # The main game loop. This loop runs a single level, when the user
     # finishes that level, the next/previous level is loaded.
@@ -219,7 +229,8 @@ def runLevel(levels, levelNum):
                 levelIsComplete = True
                 keyPressed = False
 
-        DISPLAYSURF.fill(BGCOLOR)
+       # Changed from DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.blit(IMAGESDICT['bg'], IMAGESDICT['bg'].get_rect())
 
         if mapNeedsRedraw:
             mapSurf = drawMap(mapObj, gameStateObj, levelObj['goals'])
@@ -380,21 +391,31 @@ def startScreen():
 
     # Position the title image.
     titleRect = IMAGESDICT['title'].get_rect()
-    topCoord = 50 # topCoord tracks where to position the top of the text
+    topCoord = 80 # topCoord tracks where to position the top of the text
     titleRect.top = topCoord
     titleRect.centerx = HALF_WINWIDTH
     topCoord += titleRect.height
 
+    # Add background for title screen
+    titlebgRect = IMAGESDICT['titlebg'].get_rect()
+    topbgCoord = 0
+    titlebgRect.top = topbgCoord
+    titlebgRect.centerx = HALF_WINWIDTH
+    topbgCoord += titlebgRect.height
+
     # Unfortunately, Pygame's font & text system only shows one line at
     # a time, so we can't use strings with \n newline characters in them.
-    # So we will use a list with each line in it.
+    # So we will use a list with each line in it. - Split up second sentence to safe space.
     instructionText = ['Push the stars over the marks.',
-                       'Arrow keys to move, WASD for camera control, P to change character.',
+                       'Arrow keys to move, WASD for camera control', 
+                       'P to change character.',
                        'Backspace to reset level, Esc to quit.',
                        'N for next level, B to go back a level.']
 
     # Start with drawing a blank color to the entire window:
-    DISPLAYSURF.fill(BGCOLOR)
+      # DISPLAYSURF.fill(BGCOLOR)
+    # Edited to add a background image instead of a background color
+    DISPLAYSURF.blit(IMAGESDICT['titlebg'], titlebgRect)
 
     # Draw the title image to the window:
     DISPLAYSURF.blit(IMAGESDICT['title'], titleRect)
@@ -403,7 +424,7 @@ def startScreen():
     for i in range(len(instructionText)):
         instSurf = BASICFONT.render(instructionText[i], 1, TEXTCOLOR)
         instRect = instSurf.get_rect()
-        topCoord += 10 # 10 pixels will go in between each line of text.
+        topCoord += 5 # 10 pixels will go in between each line of text. - changed to 5
         instRect.top = topCoord
         instRect.centerx = HALF_WINWIDTH
         topCoord += instRect.height # Adjust for the height of the line.
